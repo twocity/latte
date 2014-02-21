@@ -1,33 +1,53 @@
 package com.twocity.apps.latte.data.api;
 
 import com.twocity.apps.latte.data.api.model.WeiboError;
+import com.twocity.apps.latte.utils.Utils;
 
 import retrofit.RetrofitError;
-import timber.log.Timber;
 
 /**
  * Created by twocity on 14-2-12.
  */
-// TODO redefine this exception
+
 public class WeiboApiException extends RuntimeException {
 
-    private final RetrofitError mRetrofitError;
+    private int code = ERROR_UNEXPECTED;
 
-    WeiboApiException(RetrofitError error) {
-        super(createExceptionMessage(error));
-        setStackTrace(error.getStackTrace());
-        this.mRetrofitError = error;
+    WeiboApiException(String message, int code, StackTraceElement[] trace) {
+        super(message);
+        setStackTrace(trace);
+        this.code = code;
     }
 
-    private static String createExceptionMessage(RetrofitError error) {
+    public int getErrorCode() {
+        return code;
+    }
+
+    public static WeiboApiException create(RetrofitError error) {
+        int code = ERROR_UNEXPECTED;
+        String message = "unknown";
         if (error.getMessage() != null) {
-            return error.getMessage();
+            message = error.getMessage();
         }
-        if (error.getResponse() != null) {
-            Timber.d("response: %s", error.getResponse().toString());
-            return "Status: " + error.getBodyAs(WeiboError.class).toString();
+        if (error.isNetworkError()) {
+            code = ERROR_NETWORK;
+            message = "network error";
         }
-        return "Unknow error";
+        if (error.getResponse() == null) {
+            code = ERROR_UNEXPECTED;
+            message = "Unexpected Error";
+        } else {
+            WeiboError weiboError = (WeiboError) error.getBodyAs(WeiboError.class);
+            if (weiboError != null) {
+                code = Utils.parseIntSafely(weiboError.getErrorCode(), ERROR_UNEXPECTED);
+                message = weiboError.getErrorMessage();
+            }
+        }
+        return new WeiboApiException(message, code, error.getStackTrace());
     }
 
+
+    private static final int ERROR_NETWORK = 1;
+
+    private static final int ERROR_UNEXPECTED = 2;
 }

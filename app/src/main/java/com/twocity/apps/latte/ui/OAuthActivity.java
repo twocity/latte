@@ -7,6 +7,7 @@ import com.twocity.apps.latte.data.api.OAuthService;
 import com.twocity.apps.latte.data.api.UserManager;
 import com.twocity.apps.latte.data.api.WeiboApiException;
 import com.twocity.apps.latte.data.api.model.OAuthToken;
+import com.twocity.apps.latte.ui.custom.RetrofitObserver;
 import com.twocity.apps.latte.utils.SubscriptionManager;
 
 import android.app.Activity;
@@ -122,20 +123,7 @@ public class OAuthActivity extends Activity {
         mSubscriptionManager.unSubscribe();
     }
 
-    private final Observer loginObserver = new Observer<OAuthToken>() {
-        @Override
-        public void onCompleted() {
-
-        }
-
-        @Override
-        public void onError(Throwable e) {
-            if (e instanceof WeiboApiException) {
-                WeiboApiException exception = (WeiboApiException) e;
-                Timber.e(exception, "oauth error");
-            }
-        }
-
+    private final Observer loginObserver = new RetrofitObserver<OAuthToken>() {
         @Override
         public void onNext(OAuthToken token) {
             UserManager userManager = new UserManager(getApplicationContext());
@@ -146,6 +134,11 @@ public class OAuthActivity extends Activity {
             app.initWeiboClient();
             startActivity(new Intent(OAuthActivity.this, HomeActivity.class));
             finish();
+        }
+
+        @Override
+        public void onException(WeiboApiException e) {
+            Timber.e(e, "OAuth Error");
         }
     };
 

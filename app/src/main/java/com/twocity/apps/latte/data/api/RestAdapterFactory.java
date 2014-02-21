@@ -24,7 +24,7 @@ public class RestAdapterFactory {
 
         }
         return new RestAdapter.Builder().setEndpoint(Config.BASE_URL).setClient(client)
-                .setLogLevel(RestAdapter.LogLevel.FULL)
+                .setLogLevel(RestAdapter.LogLevel.HEADERS)
                 .setErrorHandler(new ErrorHandler() {
                     @Override
                     public Throwable handleError(RetrofitError cause) {

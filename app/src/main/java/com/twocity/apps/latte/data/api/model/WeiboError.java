@@ -41,9 +41,15 @@ public class WeiboError {
 
     @Override
     public String toString() {
-        return "WeiboError" +
-                "request='" + request + '\'' +
-                ", errorCode='" + errorCode + '\'' +
-                ", errorMessage='" + errorMessage;
+        StringBuffer sb = new StringBuffer("WeiApi Error:\n");
+        sb.append("request: ");
+        sb.append(request);
+        sb.append("\n");
+        sb.append("ErrorCode: ");
+        sb.append(errorCode);
+        sb.append("\n");
+        sb.append("ErrorMessage:");
+        sb.append(errorMessage);
+        return sb.toString();
     }
 }
