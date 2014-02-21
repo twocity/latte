@@ -18,7 +18,7 @@ public class RestAdapterFactory {
                     .setErrorHandler(new ErrorHandler() {
                         @Override
                         public Throwable handleError(RetrofitError cause) {
-                            return new WeiboApiException(cause);
+                            return WeiboApiException.create(cause);
                         }
                     }).setRequestInterceptor(apiHeaders).build();
 
@@ -28,7 +28,7 @@ public class RestAdapterFactory {
                 .setErrorHandler(new ErrorHandler() {
                     @Override
                     public Throwable handleError(RetrofitError cause) {
-                        return new WeiboApiException(cause);
+                        return WeiboApiException.create(cause);
                     }
                 }).build();
     }

@@ -24,7 +24,7 @@ public class Utils {
 
     public static int parseIntSafely(String value, int defaultValue) {
         try {
-            return Integer.valueOf(value)
+            return Integer.valueOf(value);
         } catch (NumberFormatException e) {
             Timber.e(e, "parse int error");
         }

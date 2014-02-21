@@ -3,7 +3,9 @@ package com.twocity.apps.latte;
 import com.twocity.apps.latte.data.api.OkClientFactory;
 import com.twocity.apps.latte.data.api.RestAdapterFactory;
 import com.twocity.apps.latte.data.api.UserManager;
+import com.twocity.apps.latte.data.api.UserService;
 import com.twocity.apps.latte.data.api.WeiboClient;
+import com.twocity.apps.latte.data.api.WeiboService;
 
 import android.app.Application;
 import android.content.Context;
@@ -38,6 +40,14 @@ public class LatteApp extends Application {
 
     public WeiboClient getApiClient() {
         return mClient;
+    }
+
+    public WeiboService getWeiboService() {
+        return getApiClient().getWeiboService();
+    }
+
+    public UserService getUserService() {
+        return getApiClient().getUserService();
     }
 
     public static LatteApp get(Context context) {

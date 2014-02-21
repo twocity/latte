@@ -1,4 +1,4 @@
-package com.twocity.apps.latte.ui.custom;
+package com.twocity.apps.latte.rx;
 
 import com.twocity.apps.latte.data.api.WeiboApiException;
 
@@ -18,7 +18,7 @@ public abstract class RetrofitObserver<T> implements Observer<T> {
     @Override
     public void onError(Throwable e) {
         if (e instanceof RetrofitError) {
-            onException(new WeiboApiException((RetrofitError) e));
+            onException(WeiboApiException.create((RetrofitError) e));
         } else {
             Timber.e(e, "UnKnown");
         }

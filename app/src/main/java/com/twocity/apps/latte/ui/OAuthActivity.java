@@ -7,7 +7,7 @@ import com.twocity.apps.latte.data.api.OAuthService;
 import com.twocity.apps.latte.data.api.UserManager;
 import com.twocity.apps.latte.data.api.WeiboApiException;
 import com.twocity.apps.latte.data.api.model.OAuthToken;
-import com.twocity.apps.latte.ui.custom.RetrofitObserver;
+import com.twocity.apps.latte.rx.RetrofitObserver;
 import com.twocity.apps.latte.utils.SubscriptionManager;
 
 import android.app.Activity;
@@ -138,6 +138,7 @@ public class OAuthActivity extends Activity {
 
         @Override
         public void onException(WeiboApiException e) {
+            Timber.e("error code: %d", e.getErrorCode());
             Timber.e(e, "OAuth Error");
         }
     };
