@@ -11,19 +11,18 @@ import timber.log.Timber;
  */
 public abstract class RetrofitObserver<T> implements Observer<T> {
 
-    @Override
-    public void onCompleted() {
+  @Override
+  public void onCompleted() {
+  }
+
+  @Override
+  public void onError(Throwable e) {
+    if (e instanceof RetrofitError) {
+      onException(WeiboApiException.create((RetrofitError) e));
+    } else {
+      Timber.e(e, "UnKnown");
     }
+  }
 
-    @Override
-    public void onError(Throwable e) {
-        if (e instanceof RetrofitError) {
-            onException(WeiboApiException.create((RetrofitError) e));
-        } else {
-            Timber.e(e, "UnKnown");
-        }
-    }
-
-    public abstract void onException(WeiboApiException e);
-
+  public abstract void onException(WeiboApiException e);
 }

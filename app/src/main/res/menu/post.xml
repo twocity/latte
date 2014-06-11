@@ -1,12 +1,12 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    tools:context="com.twocity.apps.latte.ui.PostActivity" >
-    
-    <item android:id="@+id/action_add_pic"
-        android:title="@string/action_add_pic"
-        android:showAsAction="never" />
+    tools:context="com.twocity.apps.latte.ui.PostActivity">
 
-    <item android:id="@+id/action_post"
-          android:title="@string/action_post_weibo"
-          android:showAsAction="never" />
+  <item android:id="@+id/action_add_pic"
+      android:title="@string/action_add_pic"
+      android:showAsAction="never"/>
+
+  <item android:id="@+id/action_post"
+      android:title="@string/action_post_weibo"
+      android:showAsAction="never"/>
 </menu>

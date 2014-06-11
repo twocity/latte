@@ -10,34 +10,34 @@ import timber.log.Timber;
  */
 public class Utils {
 
-    private Utils() {
-    }
+  private Utils() {
+  }
 
-    public static long parseLongSafely(String value, long defaultValue) {
-        try {
-            return Long.valueOf(value);
-        } catch (NumberFormatException e) {
-            Timber.e(e, "parse long error");
-        }
-        return defaultValue;
+  public static long parseLongSafely(String value, long defaultValue) {
+    try {
+      return Long.valueOf(value);
+    } catch (NumberFormatException e) {
+      Timber.e(e, "parse long error");
     }
+    return defaultValue;
+  }
 
-    public static int parseIntSafely(String value, int defaultValue) {
-        try {
-            return Integer.valueOf(value);
-        } catch (NumberFormatException e) {
-            Timber.e(e, "parse int error");
-        }
-        return defaultValue;
+  public static int parseIntSafely(String value, int defaultValue) {
+    try {
+      return Integer.valueOf(value);
+    } catch (NumberFormatException e) {
+      Timber.e(e, "parse int error");
     }
+    return defaultValue;
+  }
 
-    static void closeSafely(InputStream is) {
-        if (is == null) {
-            return;
-        }
-        try {
-            is.close();
-        } catch (IOException ignored) {
-        }
+  static void closeSafely(InputStream is) {
+    if (is == null) {
+      return;
     }
+    try {
+      is.close();
+    } catch (IOException ignored) {
+    }
+  }
 }

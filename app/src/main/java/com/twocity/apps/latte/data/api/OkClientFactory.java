@@ -16,26 +16,26 @@ import timber.log.Timber;
  */
 public class OkClientFactory {
 
-    static final int DISK_CACHE_SIZE = 50 * 1024 * 1024; // 50MB
+  static final int DISK_CACHE_SIZE = 50 * 1024 * 1024; // 50MB
 
-    private OkClientFactory() {
-    }
+  private OkClientFactory() {
+  }
 
-    public static OkClient make(Application app) {
-        OkHttpClient okHttpClient = provideOkHttpClient(app);
-        return new OkClient(okHttpClient);
-    }
+  public static OkClient make(Application app) {
+    OkHttpClient okHttpClient = provideOkHttpClient(app);
+    return new OkClient(okHttpClient);
+  }
 
-    private static OkHttpClient provideOkHttpClient(Application app) {
-        OkHttpClient client = new OkHttpClient();
-        // Install an Http cache in the application cache directory
-        try {
-            File cacheDir = new File(app.getCacheDir(), "http");
-            HttpResponseCache cache = new HttpResponseCache(cacheDir, DISK_CACHE_SIZE);
-            client.setResponseCache(cache);
-        } catch (IOException e) {
-            Timber.e(e, "Unable to install disk cache to OKHttp.");
-        }
-        return client;
+  private static OkHttpClient provideOkHttpClient(Application app) {
+    OkHttpClient client = new OkHttpClient();
+    // Install an Http cache in the application cache directory
+    try {
+      File cacheDir = new File(app.getCacheDir(), "http");
+      HttpResponseCache cache = new HttpResponseCache(cacheDir, DISK_CACHE_SIZE);
+      client.setResponseCache(cache);
+    } catch (IOException e) {
+      Timber.e(e, "Unable to install disk cache to OKHttp.");
     }
+    return client;
+  }
 }

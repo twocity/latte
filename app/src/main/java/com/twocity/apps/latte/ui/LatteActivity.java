@@ -8,21 +8,21 @@ import android.os.Bundle;
 
 public class LatteActivity extends Activity {
 
-    @Override
-    public void onCreate(Bundle bundle) {
-        super.onCreate(bundle);
-        setup();
-    }
+  @Override
+  public void onCreate(Bundle bundle) {
+    super.onCreate(bundle);
+    setup();
+  }
 
-    private void setup() {
-        UserManager userManager = new UserManager(getApplicationContext());
-        boolean hasUser = userManager.hasUser();
+  private void setup() {
+    UserManager userManager = new UserManager(getApplicationContext());
+    boolean hasUser = userManager.hasUser();
 
-        if (hasUser) {
-            startActivity(new Intent(this, HomeActivity.class));
-        } else {
-            startActivity(new Intent(this, OAuthActivity.class));
-        }
-        finish();
+    if (hasUser) {
+      startActivity(new Intent(this, HomeActivity.class));
+    } else {
+      startActivity(new Intent(this, OAuthActivity.class));
     }
+    finish();
+  }
 }

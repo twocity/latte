@@ -1,27 +1,27 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                xmlns:tools="http://schemas.android.com/tools"
-                android:id="@+id/container"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                tools:context="com.twocity.apps.latte.ui.PostActivity"
-                tools:ignore="MergeRootFrame">
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/container"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.twocity.apps.latte.ui.PostActivity"
+    tools:ignore="MergeRootFrame">
 
-    <ImageView
-            android:id="@+id/image_thumb"
-            android:layout_centerHorizontal="true"
-            android:layout_alignParentBottom="true"
-            android:visibility="gone"
-            android:maxHeight="150dp"
-            android:maxWidth="150dp"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"/>
+  <ImageView
+      android:id="@+id/image_thumb"
+      android:layout_centerHorizontal="true"
+      android:layout_alignParentBottom="true"
+      android:visibility="gone"
+      android:maxHeight="150dp"
+      android:maxWidth="150dp"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"/>
 
-    <EditText
-            android:id="@+id/input_edittext"
-            android:gravity="left|top"
-            android:layout_above="@+id/image_thumb"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"/>
+  <EditText
+      android:id="@+id/input_edittext"
+      android:gravity="left|top"
+      android:layout_above="@+id/image_thumb"
+      android:layout_width="match_parent"
+      android:layout_height="match_parent"/>
 
 
 </RelativeLayout>

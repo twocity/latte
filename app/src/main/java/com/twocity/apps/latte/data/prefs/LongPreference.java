@@ -4,35 +4,35 @@ import android.content.SharedPreferences;
 
 public class LongPreference {
 
-    private final SharedPreferences preferences;
+  private final SharedPreferences preferences;
 
-    private final String key;
+  private final String key;
 
-    private final long defaultValue;
+  private final long defaultValue;
 
-    public LongPreference(SharedPreferences preferences, String key) {
-        this(preferences, key, -1);
-    }
+  public LongPreference(SharedPreferences preferences, String key) {
+    this(preferences, key, -1);
+  }
 
-    public LongPreference(SharedPreferences preferences, String key, long defaultValue) {
-        this.preferences = preferences;
-        this.key = key;
-        this.defaultValue = defaultValue;
-    }
+  public LongPreference(SharedPreferences preferences, String key, long defaultValue) {
+    this.preferences = preferences;
+    this.key = key;
+    this.defaultValue = defaultValue;
+  }
 
-    public long get() {
-        return preferences.getLong(key, defaultValue);
-    }
+  public long get() {
+    return preferences.getLong(key, defaultValue);
+  }
 
-    public boolean isSet() {
-        return preferences.contains(key);
-    }
+  public boolean isSet() {
+    return preferences.contains(key);
+  }
 
-    public void set(long value) {
-        preferences.edit().putLong(key, value).apply();
-    }
+  public void set(long value) {
+    preferences.edit().putLong(key, value).apply();
+  }
 
-    public void delete() {
-        preferences.edit().remove(key).apply();
-    }
+  public void delete() {
+    preferences.edit().remove(key).apply();
+  }
 }

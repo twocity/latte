@@ -34,162 +34,162 @@ import timber.log.Timber;
  */
 public class PostService extends Service {
 
-    private static final int NOTIFICATION_ID = 1024;
+  private static final int NOTIFICATION_ID = 1024;
 
-    private static final int FAILED_NOTIFICAION_ID = NOTIFICATION_ID - 1;
+  private static final int FAILED_NOTIFICAION_ID = NOTIFICATION_ID - 1;
 
-    private static final int SUCCESS_NOTIFICAION_ID = FAILED_NOTIFICAION_ID - 1;
+  private static final int SUCCESS_NOTIFICAION_ID = FAILED_NOTIFICAION_ID - 1;
 
-    public static String EXTRA_STATUS_CONTENT = "extra_status_content";
+  public static String EXTRA_STATUS_CONTENT = "extra_status_content";
 
-    public static String EXTRA_STATUS_IMAGE_URL = "extra_status_image_url";
+  public static String EXTRA_STATUS_IMAGE_URL = "extra_status_image_url";
 
-    private WeiboService mWeiboService;
+  private WeiboService mWeiboService;
 
-    private SubscriptionManager subscriptionManager = SubscriptionManager.create();
+  private SubscriptionManager subscriptionManager = SubscriptionManager.create();
 
-    private NotificationManager notificationManager;
+  private NotificationManager notificationManager;
 
-    public static void post(Context context, String content, Uri uri) {
-        Intent service = new Intent(context, PostService.class);
-        service.putExtra(EXTRA_STATUS_CONTENT, content);
-        service.putExtra(EXTRA_STATUS_IMAGE_URL, uri);
-        context.startService(service);
+  public static void post(Context context, String content, Uri uri) {
+    Intent service = new Intent(context, PostService.class);
+    service.putExtra(EXTRA_STATUS_CONTENT, content);
+    service.putExtra(EXTRA_STATUS_IMAGE_URL, uri);
+    context.startService(service);
+  }
+
+  @Override
+  public void onCreate() {
+    super.onCreate();
+    mWeiboService = LatteApp.get(this).getApiClient().getWeiboService();
+    notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+  }
+
+  @Override
+  public int onStartCommand(Intent intent, int flags, int startId) {
+    if (intent == null) {
+      return START_NOT_STICKY;
+    }
+    String content = intent.getStringExtra(EXTRA_STATUS_CONTENT);
+    Uri imageUri = intent.getParcelableExtra(EXTRA_STATUS_IMAGE_URL);
+    postStatus(content, imageUri);
+    return START_NOT_STICKY;
+  }
+
+  private void postStatus(String content, Uri imageUri) {
+    showSendingNotification(content, imageUri);
+    Subscription s;
+    if (hasPic(imageUri)) {
+      s = mWeiboService.postStatusWithPic(new TypedString(content),
+          new Image(getContentResolver(), imageUri))
+          .subscribeOn(Schedulers.newThread())
+          .observeOn(AndroidSchedulers.mainThread())
+          .subscribe(mObserver);
+    } else {
+      s = mWeiboService.postStatus(content)
+          .subscribeOn(Schedulers.newThread())
+          .observeOn(AndroidSchedulers.mainThread())
+          .subscribe(mObserver);
+    }
+    subscriptionManager.add(s);
+  }
+
+  private boolean hasPic(Uri imageUri) {
+    if (imageUri != null) {
+      return true;
+    }
+    return false;
+  }
+
+  private void showSendingNotification(String content, Uri uri) {
+    NotificationCompat.Builder builder =
+        new NotificationCompat.Builder(this).setSmallIcon(R.drawable.holo_dark_icon_send)
+            .setContentTitle(getString(R.string.post_status_title))
+            .setOngoing(true)
+            .setContentText(content)
+            .setProgress(0, 0, true);
+    if (hasPic(uri)) {
+      Bitmap bm = getBitmapFromUri(uri);
+      NotificationCompat.BigPictureStyle style =
+          new NotificationCompat.BigPictureStyle().bigPicture(bm);
+      builder.setStyle(style);
+    }
+    notificationManager.notify(NOTIFICATION_ID, builder.build());
+  }
+
+  private void showSuccessNotification() {
+    Notification notification = new NotificationCompat.Builder(PostService.this).setSmallIcon(
+        R.drawable.holo_dark_icon_accept)
+        .setContentTitle(getString(R.string.app_name))
+        .setContentText(getString(R.string.post_status_success_title))
+        .setTicker(getString(R.string.post_status_success_title))
+        .setOngoing(false)
+        .setOngoing(false)
+        .build();
+    notificationManager.notify(SUCCESS_NOTIFICAION_ID, notification);
+  }
+
+  private void showFailedNotification() {
+    Notification notification = new NotificationCompat.Builder(PostService.this).setSmallIcon(
+        R.drawable.holo_dark_icon_cancel)
+        .setContentTitle(getString(R.string.app_name))
+        .setContentText(getString(R.string.post_status_failed_title))
+        .setTicker(getString(R.string.post_status_failed_title))
+        .setOngoing(false)
+        .setOngoing(false)
+        .build();
+    notificationManager.notify(FAILED_NOTIFICAION_ID, notification);
+  }
+
+  private final Observer mObserver = new Observer<Status>() {
+    @Override
+    public void onCompleted() {
+      notificationManager.cancel(NOTIFICATION_ID);
     }
 
     @Override
-    public void onCreate() {
-        super.onCreate();
-        mWeiboService = LatteApp.get(this).getApiClient().getWeiboService();
-        notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-    }
-
-
-    @Override
-    public int onStartCommand(Intent intent, int flags, int startId) {
-        if (intent == null) {
-            return START_NOT_STICKY;
-        }
-        String content = intent.getStringExtra(EXTRA_STATUS_CONTENT);
-        Uri imageUri = intent.getParcelableExtra(EXTRA_STATUS_IMAGE_URL);
-        postStatus(content, imageUri);
-        return START_NOT_STICKY;
-    }
-
-    private void postStatus(String content, Uri imageUri) {
-        showSendingNotification(content, imageUri);
-        Subscription s;
-        if (hasPic(imageUri)) {
-            s = mWeiboService.postStatusWithPic(new TypedString(content),
-                    new Image(getContentResolver(), imageUri))
-                    .subscribeOn(Schedulers.newThread())
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(mObserver);
-        } else {
-            s = mWeiboService.postStatus(content)
-                    .subscribeOn(Schedulers.newThread())
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(mObserver);
-
-        }
-        subscriptionManager.add(s);
-    }
-
-    private boolean hasPic(Uri imageUri) {
-        if (imageUri != null) {
-            return true;
-        }
-        return false;
-    }
-
-    private void showSendingNotification(String content, Uri uri) {
-        NotificationCompat.Builder builder = new NotificationCompat.Builder(this)
-                .setSmallIcon(R.drawable.holo_dark_icon_send)
-                .setContentTitle(getString(R.string.post_status_title))
-                .setOngoing(true)
-                .setContentText(content)
-                .setProgress(0, 0, true);
-        if (hasPic(uri)) {
-            Bitmap bm = getBitmapFromUri(uri);
-            NotificationCompat.BigPictureStyle style = new NotificationCompat.BigPictureStyle()
-                    .bigPicture(bm);
-            builder.setStyle(style);
-        }
-        notificationManager.notify(NOTIFICATION_ID, builder.build());
-    }
-
-    private void showSuccessNotification() {
-        Notification notification = new NotificationCompat.Builder(PostService.this)
-                .setSmallIcon(R.drawable.holo_dark_icon_accept)
-                .setContentTitle(getString(R.string.app_name))
-                .setContentText(getString(R.string.post_status_success_title))
-                .setTicker(getString(R.string.post_status_success_title))
-                .setOngoing(false).setOngoing(false).build();
-        notificationManager.notify(SUCCESS_NOTIFICAION_ID, notification);
-    }
-
-    private void showFailedNotification() {
-        Notification notification = new NotificationCompat.Builder(PostService.this)
-                .setSmallIcon(R.drawable.holo_dark_icon_cancel)
-                .setContentTitle(getString(R.string.app_name))
-                .setContentText(getString(R.string.post_status_failed_title))
-                .setTicker(getString(R.string.post_status_failed_title))
-                .setOngoing(false).setOngoing(false).build();
-        notificationManager.notify(FAILED_NOTIFICAION_ID, notification);
-    }
-
-    private final Observer mObserver = new Observer<Status>() {
-        @Override
-        public void onCompleted() {
-            notificationManager.cancel(NOTIFICATION_ID);
-        }
-
-        @Override
-        public void onError(Throwable e) {
-            Timber.e(e, "post status failed");
-            showFailedNotification();
-        }
-
-        @Override
-        public void onNext(Status status) {
-            Timber.d("post status: %s,create at: %s", status.getContent(),
-                    status.getCreateAt());
-            notificationManager.cancel(NOTIFICATION_ID);
-            showSuccessNotification();
-        }
-    };
-
-    private Bitmap getBitmapFromUri(Uri uri) {
-        ParcelFileDescriptor parcelFileDescriptor = null;
-        try {
-            parcelFileDescriptor = getContentResolver().openFileDescriptor(uri, "r");
-            FileDescriptor fileDescriptor = parcelFileDescriptor.getFileDescriptor();
-            Bitmap image = BitmapFactory.decodeFileDescriptor(fileDescriptor);
-            parcelFileDescriptor.close();
-            return image;
-        } catch (Exception e) {
-            Timber.e(e, "Failed to load image.", e);
-            return null;
-        } finally {
-            try {
-                if (parcelFileDescriptor != null) {
-                    parcelFileDescriptor.close();
-                }
-            } catch (IOException e) {
-                Timber.e(e, "Error closing ParcelFile Descriptor");
-            }
-        }
-    }
-
-
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-        subscriptionManager.unSubscribe();
+    public void onError(Throwable e) {
+      Timber.e(e, "post status failed");
+      showFailedNotification();
     }
 
     @Override
-    public IBinder onBind(Intent intent) {
-        return null;
+    public void onNext(Status status) {
+      Timber.d("post status: %s,create at: %s", status.getContent(), status.getCreateAt());
+      notificationManager.cancel(NOTIFICATION_ID);
+      showSuccessNotification();
     }
+  };
+
+  private Bitmap getBitmapFromUri(Uri uri) {
+    ParcelFileDescriptor parcelFileDescriptor = null;
+    try {
+      parcelFileDescriptor = getContentResolver().openFileDescriptor(uri, "r");
+      FileDescriptor fileDescriptor = parcelFileDescriptor.getFileDescriptor();
+      Bitmap image = BitmapFactory.decodeFileDescriptor(fileDescriptor);
+      parcelFileDescriptor.close();
+      return image;
+    } catch (Exception e) {
+      Timber.e(e, "Failed to load image.", e);
+      return null;
+    } finally {
+      try {
+        if (parcelFileDescriptor != null) {
+          parcelFileDescriptor.close();
+        }
+      } catch (IOException e) {
+        Timber.e(e, "Error closing ParcelFile Descriptor");
+      }
+    }
+  }
+
+  @Override
+  public void onDestroy() {
+    super.onDestroy();
+    subscriptionManager.unSubscribe();
+  }
+
+  @Override
+  public IBinder onBind(Intent intent) {
+    return null;
+  }
 }

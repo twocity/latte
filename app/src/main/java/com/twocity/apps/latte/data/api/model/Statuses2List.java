@@ -9,8 +9,8 @@ import rx.util.functions.Func1;
  */
 public class Statuses2List implements Func1<Statueses, List<Status>> {
 
-    @Override
-    public List<Status> call(Statueses statueses) {
-        return statueses.getStatuses();
-    }
+  @Override
+  public List<Status> call(Statueses statueses) {
+    return statueses.getStatuses();
+  }
 }

@@ -8,6 +8,7 @@ import java.util.Map;
 
 import javax.inject.Named;
 
+import retrofit.Callback;
 import retrofit.http.Body;
 import retrofit.http.Field;
 import retrofit.http.FormUrlEncoded;
@@ -24,21 +25,23 @@ import rx.Observable;
  */
 public interface WeiboService {
 
-    @GET("/statuses/user_timeline.json")
-    public Statueses userTimeLine(@QueryMap Map<String, String> options);
+  @GET("/statuses/user_timeline.json")
+  public Statueses userTimeLine(@QueryMap Map<String, String> options);
 
-    @GET("/statuses/home_timeline.json")
-    public Statueses homeTimeLine(@QueryMap Map<String, String> options);
+  @GET("/statuses/home_timeline.json")
+  public Statueses homeTimeLine(@QueryMap Map<String, String> options);
 
-    @GET("/statuses/home_timeline.json")
-    public Observable<Statueses> homeTimeLineRx(@QueryMap Map<String, String> options);
+  @GET("/statuses/home_timeline.json")
+  public void homeTimeLineWithCallback(@QueryMap Map<String, String> options,
+      Callback<Statueses> callback);
 
-    @FormUrlEncoded
-    @POST("/statuses/update.json")
-    public Observable<Status> postStatus(@Field("status") String status);
+  @GET("/statuses/home_timeline.json")
+  public Observable<Statueses> homeTimeLineRx(@QueryMap Map<String, String> options);
 
-    @Multipart
-    @POST("/statuses/upload.json")
-    public Observable<Status> postStatusWithPic(@Part("status") TypedString status,
-            @Part("pic") Image image);
+  @FormUrlEncoded @POST("/statuses/update.json")
+  public Observable<Status> postStatus(@Field("status") String status);
+
+  @Multipart @POST("/statuses/upload.json")
+  public Observable<Status> postStatusWithPic(@Part("status") TypedString status,
+      @Part("pic") Image image);
 }

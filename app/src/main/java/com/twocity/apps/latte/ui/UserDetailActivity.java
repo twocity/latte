@@ -23,74 +23,68 @@ import rx.subscriptions.Subscriptions;
 
 public class UserDetailActivity extends Activity {
 
-    Subscription mSubscription;
+  Subscription mSubscription;
 
+  @InjectView(R.id.userAvatar) ImageView mUserAvatar;
 
-    @InjectView(R.id.userAvatar)
-    ImageView mUserAvatar;
+  @InjectView(R.id.userProfileAvatar) ImageView mUserProfile;
 
-    @InjectView(R.id.userProfileAvatar)
-    ImageView mUserProfile;
+  UserService mUserService;
 
-    UserService mUserService;
+  @Override
+  protected void onCreate(Bundle savedInstanceState) {
+    super.onCreate(savedInstanceState);
+    setContentView(R.layout.activity_user_detail);
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_user_detail);
+    mUserService = LatteApp.get(this).getApiClient().getUserService();
 
-        mUserService = LatteApp.get(this).getApiClient().getUserService();
+    ButterKnife.inject(this);
 
-        ButterKnife.inject(this);
+    mSubscription = create().subscribeOn(Schedulers.newThread())
+        .observeOn(AndroidSchedulers.mainThread())
+        .subscribe(new Observer<User>() {
+          @Override
+          public void onCompleted() {
 
-        mSubscription = create()
-                .subscribeOn(Schedulers.newThread())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Observer<User>() {
-                    @Override
-                    public void onCompleted() {
+          }
 
-                    }
+          @Override
+          public void onError(Throwable e) {
+            e.printStackTrace();
+          }
 
-                    @Override
-                    public void onError(Throwable e) {
-                        e.printStackTrace();
-                    }
-
-                    @Override
-                    public void onNext(User user) {
-                        setTitle(user.getScreenName());
-                        Picasso.with(getApplicationContext()).load(user.getUserAvatarLarge())
-                                .into(mUserAvatar);
-                    }
-                });
-    }
-
-    private Observable<User> create() {
-
-        return Observable.create(new Observable.OnSubscribeFunc<User>() {
-            @Override
-            public Subscription onSubscribe(Observer<? super User> observer) {
-                try {
-                    String threadName = Thread.currentThread().getName();
-                    UserManager manager = new UserManager(getApplicationContext());
-                    Log.d("UserDetailActivity", "on thread: " + threadName);
-                    User user = mUserService.userDetail(manager.getUID());
-                    observer.onNext(user);
-                    observer.onCompleted();
-                } catch (Exception e) {
-                    observer.onError(e);
-                    e.printStackTrace();
-                }
-                return Subscriptions.empty();
-            }
+          @Override
+          public void onNext(User user) {
+            setTitle(user.getScreenName());
+            Picasso.with(getApplicationContext()).load(user.getUserAvatarLarge()).into(mUserAvatar);
+          }
         });
+  }
 
-    }
+  private Observable<User> create() {
 
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        mSubscription.unsubscribe();
-    }
+    return Observable.create(new Observable.OnSubscribeFunc<User>() {
+      @Override
+      public Subscription onSubscribe(Observer<? super User> observer) {
+        try {
+          String threadName = Thread.currentThread().getName();
+          UserManager manager = new UserManager(getApplicationContext());
+          Log.d("UserDetailActivity", "on thread: " + threadName);
+          User user = mUserService.userDetail(manager.getUID());
+          observer.onNext(user);
+          observer.onCompleted();
+        } catch (Exception e) {
+          observer.onError(e);
+          e.printStackTrace();
+        }
+        return Subscriptions.empty();
+      }
+    });
+  }
+
+  @Override
+  protected void onDestroy() {
+    super.onDestroy();
+    mSubscription.unsubscribe();
+  }
 }

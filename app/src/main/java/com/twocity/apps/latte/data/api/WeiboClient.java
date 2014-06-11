@@ -7,31 +7,30 @@ import retrofit.RestAdapter;
  */
 public class WeiboClient {
 
-    private RestAdapter mRestAdapter;
+  private RestAdapter mRestAdapter;
 
-    private WeiboService mWeiboService;
+  private WeiboService mWeiboService;
 
-    private UserService mUserService;
+  private UserService mUserService;
 
-    private OAuthService mOAuthService;
+  private OAuthService mOAuthService;
 
-    public WeiboClient(RestAdapter adapter) {
-        mRestAdapter = adapter;
-        mWeiboService = mRestAdapter.create(WeiboService.class);
-        mUserService = mRestAdapter.create(UserService.class);
-        mOAuthService = mRestAdapter.create(OAuthService.class);
-    }
+  public WeiboClient(RestAdapter adapter) {
+    mRestAdapter = adapter;
+    mWeiboService = mRestAdapter.create(WeiboService.class);
+    mUserService = mRestAdapter.create(UserService.class);
+    mOAuthService = mRestAdapter.create(OAuthService.class);
+  }
 
-    public OAuthService getOAuthService() {
-        return mOAuthService;
-    }
+  public OAuthService getOAuthService() {
+    return mOAuthService;
+  }
 
-    public WeiboService getWeiboService() {
-        return mWeiboService;
-    }
+  public WeiboService getWeiboService() {
+    return mWeiboService;
+  }
 
-    public UserService getUserService() {
-        return mUserService;
-    }
-
+  public UserService getUserService() {
+    return mUserService;
+  }
 }

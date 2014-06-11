@@ -7,13 +7,13 @@ import java.util.List;
  */
 public class Statueses {
 
-    private List<Status> statuses;
+  private List<Status> statuses;
 
-    public List<Status> getStatuses() {
-        return statuses;
-    }
+  public List<Status> getStatuses() {
+    return statuses;
+  }
 
-    public void setStatuses(List<Status> statuses) {
-        this.statuses = statuses;
-    }
+  public void setStatuses(List<Status> statuses) {
+    this.statuses = statuses;
+  }
 }

@@ -18,40 +18,39 @@ import timber.log.Timber;
  */
 public class LatteApp extends Application {
 
-    private WeiboClient mClient;
+  private WeiboClient mClient;
 
-    @Override
-    public void onCreate() {
-        super.onCreate();
+  @Override
+  public void onCreate() {
+    super.onCreate();
 
-        if (BuildConfig.DEBUG) {
-            Timber.plant(new Timber.DebugTree());
-        } else {
-            // TODO
-        }
-        initWeiboClient();
+    if (BuildConfig.DEBUG) {
+      Timber.plant(new Timber.DebugTree());
+    } else {
+      // TODO
     }
+    initWeiboClient();
+  }
 
-    public void initWeiboClient() {
-        RestAdapter adapter = RestAdapterFactory
-                .make(new UserManager(this), OkClientFactory.make(this));
-        mClient = new WeiboClient(adapter);
-    }
+  public void initWeiboClient() {
+    RestAdapter adapter =
+        RestAdapterFactory.make(new UserManager(this), OkClientFactory.make(this));
+    mClient = new WeiboClient(adapter);
+  }
 
-    public WeiboClient getApiClient() {
-        return mClient;
-    }
+  public WeiboClient getApiClient() {
+    return mClient;
+  }
 
-    public WeiboService getWeiboService() {
-        return getApiClient().getWeiboService();
-    }
+  public WeiboService getWeiboService() {
+    return getApiClient().getWeiboService();
+  }
 
-    public UserService getUserService() {
-        return getApiClient().getUserService();
-    }
+  public UserService getUserService() {
+    return getApiClient().getUserService();
+  }
 
-    public static LatteApp get(Context context) {
-        return (LatteApp) context.getApplicationContext();
-    }
-
+  public static LatteApp get(Context context) {
+    return (LatteApp) context.getApplicationContext();
+  }
 }

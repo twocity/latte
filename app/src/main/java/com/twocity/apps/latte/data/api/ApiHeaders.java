@@ -7,16 +7,16 @@ import retrofit.RequestInterceptor;
  */
 public class ApiHeaders implements RequestInterceptor {
 
-    private final String AUTHORIZATION_PREFIX = "OAuth2";
+  private final String AUTHORIZATION_PREFIX = "OAuth2";
 
-    private String authorizationValue;
+  private String authorizationValue;
 
-    public ApiHeaders(String accessToken) {
-        authorizationValue = AUTHORIZATION_PREFIX + " " + accessToken;
-    }
+  public ApiHeaders(String accessToken) {
+    authorizationValue = AUTHORIZATION_PREFIX + " " + accessToken;
+  }
 
-    @Override
-    public void intercept(RequestFacade request) {
-        request.addHeader("Authorization", authorizationValue);
-    }
+  @Override
+  public void intercept(RequestFacade request) {
+    request.addHeader("Authorization", authorizationValue);
+  }
 }

@@ -7,15 +7,14 @@ import com.google.gson.annotations.SerializedName;
  */
 public class PictureUrl {
 
-    public String getThumbnailPic() {
-        return thumbnailPic;
-    }
+  public String getThumbnailPic() {
+    return thumbnailPic;
+  }
 
-    public void setThumbnailPic(String thumbnailPic) {
-        this.thumbnailPic = thumbnailPic;
-    }
+  public void setThumbnailPic(String thumbnailPic) {
+    this.thumbnailPic = thumbnailPic;
+  }
 
-    @SerializedName("thumbnail_pic")
-    private String thumbnailPic;
-
+  @SerializedName("thumbnail_pic")
+  private String thumbnailPic;
 }

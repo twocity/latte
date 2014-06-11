@@ -9,6 +9,6 @@ import retrofit.http.Query;
  * Created by twocity on 14-2-12.
  */
 public interface UserService {
-    @GET("/users/show.json")
-    public User userDetail(@Query("uid") long uid);
+  @GET("/users/show.json")
+  public User userDetail(@Query("uid") long uid);
 }

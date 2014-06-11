@@ -10,31 +10,30 @@ import rx.Subscription;
  */
 public class SubscriptionManager {
 
-    private List<Subscription> subscriptions;
+  private List<Subscription> subscriptions;
 
-    private SubscriptionManager() {
-        subscriptions = new ArrayList<Subscription>();
+  private SubscriptionManager() {
+    subscriptions = new ArrayList<Subscription>();
+  }
+
+  public void add(Subscription s) {
+    if (s != null) {
+      subscriptions.add(s);
     }
+  }
 
-    public void add(Subscription s) {
-        if (s != null) {
-            subscriptions.add(s);
-        }
+  public void unSubscribe() {
+    if (subscriptions == null || subscriptions.isEmpty()) {
+      return;
     }
-
-    public void unSubscribe() {
-        if (subscriptions == null || subscriptions.isEmpty()) {
-            return;
-        }
-        for (Subscription s : subscriptions) {
-            if (s != null) {
-                s.unsubscribe();
-            }
-        }
+    for (Subscription s : subscriptions) {
+      if (s != null) {
+        s.unsubscribe();
+      }
     }
+  }
 
-    public static SubscriptionManager create() {
-        return new SubscriptionManager();
-    }
-
+  public static SubscriptionManager create() {
+    return new SubscriptionManager();
+  }
 }
