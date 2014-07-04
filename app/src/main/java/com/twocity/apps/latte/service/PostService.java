@@ -22,6 +22,7 @@ import android.support.v4.app.NotificationCompat;
 import java.io.FileDescriptor;
 import java.io.IOException;
 
+import javax.inject.Inject;
 import retrofit.mime.TypedString;
 import rx.Observer;
 import rx.Subscription;
@@ -44,7 +45,7 @@ public class PostService extends Service {
 
   public static String EXTRA_STATUS_IMAGE_URL = "extra_status_image_url";
 
-  private WeiboService mWeiboService;
+  @Inject WeiboService mWeiboService;
 
   private SubscriptionManager subscriptionManager = SubscriptionManager.create();
 
@@ -60,7 +61,7 @@ public class PostService extends Service {
   @Override
   public void onCreate() {
     super.onCreate();
-    mWeiboService = LatteApp.get(this).getApiClient().getWeiboService();
+    LatteApp.get(this).inject(this);
     notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
   }
 

@@ -16,6 +16,7 @@ import com.twocity.apps.latte.data.api.model.TimeLineQueryMapBuilder;
 import com.twocity.apps.latte.ui.custom.PagedListFragment;
 import java.util.List;
 import java.util.Map;
+import javax.inject.Inject;
 import rx.Observable;
 import rx.util.functions.Func1;
 
@@ -24,12 +25,12 @@ import rx.util.functions.Func1;
  */
 public class TimeLineFragment2 extends PagedListFragment<List<Status>> {
 
-  private WeiboService weiboService;
+  @Inject WeiboService weiboService;
   private TimeLineAdapter adapter;
 
   @Override public void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
-    weiboService = LatteApp.get(getActivity()).getApiClient().getWeiboService();
+    LatteApp.get(getActivity()).inject(this);
   }
 
   @Override public void onViewCreated(View view, Bundle savedInstanceState) {

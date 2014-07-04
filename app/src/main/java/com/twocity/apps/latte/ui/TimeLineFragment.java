@@ -18,6 +18,7 @@ import com.twocity.apps.latte.data.api.model.TimeLineQueryMapBuilder;
 import com.twocity.apps.latte.ui.custom.EndlessScrollListener;
 import java.util.List;
 import java.util.Map;
+import javax.inject.Inject;
 import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
@@ -35,7 +36,7 @@ import uk.co.senab.actionbarpulltorefresh.library.listeners.OnRefreshListener;
 
 public class TimeLineFragment extends ListFragment implements OnRefreshListener {
 
-  private WeiboService mWeiboService;
+  @Inject WeiboService mWeiboService;
 
   private Subscription mSubscription;
 
@@ -50,8 +51,7 @@ public class TimeLineFragment extends ListFragment implements OnRefreshListener 
   @Override
   public void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
-    LatteApp app = LatteApp.get(getActivity());
-    mWeiboService = app.getApiClient().getWeiboService();
+    LatteApp.get(getActivity()).inject(this);
     setHasOptionsMenu(true);
   }
 
@@ -171,16 +171,5 @@ public class TimeLineFragment extends ListFragment implements OnRefreshListener 
             mAdapter.addHeader(list);
           }
         });
-  }
-
-  private void test(long sinceId) {
-    Map<String, String> queryMap = new TimeLineQueryMapBuilder().sinceId(sinceId).maxId(0).build();
-    mWeiboService.homeTimeLineWithCallback(queryMap, new Callback<Statueses>() {
-      @Override public void success(Statueses statueses, Response response) {
-      }
-
-      @Override public void failure(RetrofitError error) {
-      }
-    });
   }
 }

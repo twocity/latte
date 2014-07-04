@@ -21,6 +21,7 @@ import android.widget.TextView;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
+import javax.inject.Inject;
 import rx.Observer;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
@@ -46,7 +47,8 @@ public class OAuthActivity extends Activity {
 
   private String mPassword;
 
-  private OAuthService mOAuthService;
+  @Inject OAuthService mOAuthService;
+  @Inject UserManager userManager;
 
   private SubscriptionManager mSubscriptionManager = SubscriptionManager.create();
 
@@ -56,7 +58,7 @@ public class OAuthActivity extends Activity {
     setContentView(R.layout.activity_login);
     ButterKnife.inject(this);
     LatteApp app = LatteApp.get(this);
-    mOAuthService = app.getApiClient().getOAuthService();
+    app.inject(this);
   }
 
   private void Login() {
@@ -121,12 +123,11 @@ public class OAuthActivity extends Activity {
   private final Observer loginObserver = new RetrofitObserver<OAuthToken>() {
     @Override
     public void onNext(OAuthToken token) {
-      UserManager userManager = new UserManager(getApplicationContext());
       String accessToken = token.getAccess_token();
       userManager.setOAuthToken(accessToken);
       userManager.setUID(token.getUid());
       LatteApp app = LatteApp.get(OAuthActivity.this);
-      app.initWeiboClient();
+      app.plusUserObjectGraph(token.getAccess_token());
       startActivity(new Intent(OAuthActivity.this, HomeActivity.class));
       finish();
     }

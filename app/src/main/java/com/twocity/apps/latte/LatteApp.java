@@ -1,16 +1,10 @@
 package com.twocity.apps.latte;
 
-import com.twocity.apps.latte.data.api.OkClientFactory;
-import com.twocity.apps.latte.data.api.RestAdapterFactory;
-import com.twocity.apps.latte.data.api.UserManager;
-import com.twocity.apps.latte.data.api.UserService;
-import com.twocity.apps.latte.data.api.WeiboClient;
-import com.twocity.apps.latte.data.api.WeiboService;
-
 import android.app.Application;
 import android.content.Context;
 
-import retrofit.RestAdapter;
+import com.twocity.apps.latte.data.api.ApiModule;
+import dagger.ObjectGraph;
 import timber.log.Timber;
 
 /**
@@ -18,7 +12,8 @@ import timber.log.Timber;
  */
 public class LatteApp extends Application {
 
-  private WeiboClient mClient;
+  private ObjectGraph originObjectGraph;
+  private ObjectGraph userObjectGraph;
 
   @Override
   public void onCreate() {
@@ -29,25 +24,25 @@ public class LatteApp extends Application {
     } else {
       // TODO
     }
-    initWeiboClient();
+    buildObjectGraphAndInject();
   }
 
-  public void initWeiboClient() {
-    RestAdapter adapter =
-        RestAdapterFactory.make(new UserManager(this), OkClientFactory.make(this));
-    mClient = new WeiboClient(adapter);
+  private void buildObjectGraphAndInject() {
+    originObjectGraph = ObjectGraph.create(Modules.list(this));
+    userObjectGraph = originObjectGraph;
   }
 
-  public WeiboClient getApiClient() {
-    return mClient;
+  public void plusUserObjectGraph(String token) {
+    userObjectGraph = originObjectGraph.plus(new ApiModule(token));
   }
 
-  public WeiboService getWeiboService() {
-    return getApiClient().getWeiboService();
+  public void removeUserObjectGraph() {
+    userObjectGraph = originObjectGraph;
+    userObjectGraph = originObjectGraph.plus(new ApiModule(""));
   }
 
-  public UserService getUserService() {
-    return getApiClient().getUserService();
+  public void inject(Object o) {
+    userObjectGraph.inject(o);
   }
 
   public static LatteApp get(Context context) {

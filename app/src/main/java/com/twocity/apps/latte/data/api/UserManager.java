@@ -1,5 +1,6 @@
 package com.twocity.apps.latte.data.api;
 
+import android.app.Application;
 import com.twocity.apps.latte.data.prefs.LongPreference;
 import com.twocity.apps.latte.data.prefs.StringPreference;
 
@@ -7,12 +8,15 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.text.TextUtils;
 
+import javax.inject.Inject;
+import javax.inject.Singleton;
 import timber.log.Timber;
 
 /**
  * Created by twocity on 14-2-14.
  */
-public class UserManager {
+@Singleton
+public final class UserManager {
 
   private static final String PREF_NAME = "user_shared_pref";
 
@@ -22,7 +26,8 @@ public class UserManager {
 
   private LongPreference mUIdPreference;
 
-  public UserManager(Context context) {
+  @Inject
+  public UserManager(Application context) {
     mContext = context;
     SharedPreferences pref = mContext.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE);
     mTokenPreference = new StringPreference(pref, "oauth_token", null);
